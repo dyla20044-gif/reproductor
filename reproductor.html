@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reproductor M3U8 Simple</title>
+    <style>
+        body { background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        video { max-width: 90%; max-height: 90%; }
+    </style>
+</head>
+<body>
+
+    <video id="video" controls></video>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <script>
+        // *** Pega tu enlace M3U8 aquí ***
+        var m3u8Url = 'https://guxhag.com/stream/boZQSyFy3bSLlSgve-jN0g/kjhhiuahiuhgihdf/1759950429/15453389/master.m3u8';
+        
+        var video = document.getElementById('video');
+        
+        if(Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(m3u8Url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                // El video intentará reproducirse automáticamente, si el navegador lo permite
+                video.play();
+            });
+            hls.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    console.error('Error HLS: ', data.details);
+                    alert('Error al cargar el stream. El enlace puede haber expirado o estar bloqueado.');
+                }
+            });
+        } 
+        // Para Safari (que soporta HLS nativamente)
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = m3u8Url;
+            video.addEventListener('loadedmetadata', function() {
+                video.play();
+            });
+        }
+        else {
+            alert('Tu navegador no soporta la reproducción de HLS.');
+        }
+    </script>
+
+</body>
+</html>
