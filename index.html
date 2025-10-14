@@ -116,11 +116,13 @@
             videoPlayer.src = '';
 
             try {
-                // Construir la URL de la API
-                const apiUrl = `https://goodstream.one/api/file/direct_link?key=${apiKey}&file_code=${fileCode}`;
+                // Se usa un proxy para evitar el error de CORS
+                const proxyUrl = 'https://corsproxy.io/?';
+                const originalApiUrl = `https://goodstream.one/api/file/direct_link?key=${apiKey}&file_code=${fileCode}`;
+                const finalUrl = proxyUrl + encodeURIComponent(originalApiUrl);
 
-                // Realizar la solicitud a la API
-                const response = await fetch(apiUrl);
+                // Realizar la solicitud a la API a través del proxy
+                const response = await fetch(finalUrl);
                 const data = await response.json();
 
                 if (data.estado === 200 && data.resultado && data.resultado.versiones && data.resultado.versiones.length > 0) {
