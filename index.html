@@ -3,152 +3,746 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reproductor de God Xtreme</title>
+    <title>Casting - Sombras de la Ciudad | Concepto Max</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
+        /* =========================================
+           VARIABLES Y RESET
+           ========================================= */
+        :root {
+            --bg-color: #050505;
+            --surface-color: #121212;
+            --primary-accent: #8a2be2; /* Tono púrpura estilo Max */
+            --primary-hover: #9d4edd;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --font-main: 'Inter', sans-serif;
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
             margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 0;
             box-sizing: border-box;
         }
-        button {
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Bloquear scroll cuando el modal está abierto */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /* =========================================
+           HEADER (NAVEGACIÓN)
+           ========================================= */
+        header {
+            position: absolute;
+            top: 0;
             width: 100%;
-            padding: 12px;
-            background-color: #007bff;
+            padding: 2rem 4rem;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .logo-demo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo-demo span {
+            color: var(--primary-accent);
+        }
+
+        .badge-demo {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* =========================================
+           SECCIÓN HERO
+           ========================================= */
+        .hero {
+            position: relative;
+            height: 90vh;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 4rem 6rem 4rem;
+            /* PEGA EL ENLACE DE TU PÓSTER PRINCIPAL AQUÍ (reemplaza la URL) */
+            background-image: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center 20%;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, var(--bg-color) 0%, rgba(5,5,5,0.4) 50%, rgba(5,5,5,0.1) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero-label {
+            display: inline-block;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--primary-accent);
+            font-weight: 600;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* =========================================
+           SECCIÓN RESUMEN
+           ========================================= */
+        .summary {
+            padding: 4rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .summary p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* =========================================
+           SECCIÓN CANDIDATOS (GRID)
+           ========================================= */
+        .candidates-section {
+            padding: 2rem 4rem 6rem 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            font-weight: 600;
+            border-left: 4px solid var(--primary-accent);
+            padding-left: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Tarjetas de Candidatos */
+        .card {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.2);
+            border-color: rgba(138, 43, 226, 0.3);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            padding-top: 130%; /* Aspect ratio para fotos tipo retrato */
+            overflow: hidden;
+        }
+
+        .card-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 2;
+        }
+
+        .card-info {
+            padding: 1.5rem;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
+            z-index: 2;
+        }
+
+        .card-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-votes-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .vote-count {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .vote-count.updated {
+            color: #00ff88;
+            transform: scale(1.1);
+        }
+
+        .btn-vote {
+            background-color: var(--primary-accent);
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: var(--transition-smooth);
+            font-family: inherit;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .btn-vote:hover {
+            background-color: var(--primary-hover);
+            transform: scale(1.05);
         }
-        #video-container {
-            margin-top: 30px;
+
+        /* =========================================
+           MODAL DE DETALLE
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
-        #video-player {
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--surface-color);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            border-radius: 16px;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--primary-accent);
+        }
+
+        .modal-left {
+            flex: 0 0 40%;
+            position: relative;
+        }
+
+        .modal-img {
             width: 100%;
-            max-height: 400px;
-            border-radius: 8px;
-            display: none;
+            height: 100%;
+            object-fit: cover;
         }
-        #message {
-            margin-top: 15px;
-            color: red;
+
+        .modal-right {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .modal-role-label {
+            color: var(--primary-accent);
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-character {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .modal-section p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Destacado especial para el TOP */
+        .highlight-dylan {
+            border-left: 4px solid var(--primary-accent);
+            padding-left: 1.5rem;
+            background: linear-gradient(to right, rgba(138, 43, 226, 0.1), transparent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-logo {
+            color: var(--primary-accent);
             font-weight: bold;
+        }
+
+        /* =========================================
+           ANIMACIONES & RESPONSIVE
+           ========================================= */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 900px) {
+            .hero-title { font-size: 3.5rem; }
+            .modal-content { flex-direction: column; max-height: 95vh; }
+            .modal-left { flex: 0 0 300px; }
+            .modal-right { padding: 2rem; }
+            header, .hero, .candidates-section { padding-left: 2rem; padding-right: 2rem; }
+        }
+
+        @media (max-width: 600px) {
+            .hero-title { font-size: 2.5rem; }
+            .hero { padding: 0 1.5rem 4rem 1.5rem; }
+            header, .candidates-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+            .summary { padding: 2rem 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Reproductor God Xtreme</h1>
-        <div class="form-group">
-            <label for="fileCode">Código de Archivo:</label>
-            <input type="text" id="fileCode" placeholder="Ingresa el código del video">
+    <header>
+        <div class="logo-demo">Sombras<span>.</span></div>
+        <div class="badge-demo">CASTING DEMO</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-label">Max Original</span>
+            <h1 class="hero-title">Sombras de la Ciudad</h1>
+            <h2 class="hero-subtitle">Casting Abierto</h2>
         </div>
-        <div class="form-group">
-            <label for="apiKey">Clave API:</label>
-            <input type="text" id="apiKey" placeholder="Ingresa tu clave API">
+    </section>
+
+    <section class="summary">
+        <p>En las profundidades de una metrópolis implacable, la línea entre la ley y el crimen organizado se desvanece. "Sombras de la Ciudad" sigue a un grupo de operativos y criminales atrapados en una red de corrupción, traición y secretos letales. Se buscan rostros que puedan ocultar las verdades más oscuras. ¿Quién sobrevivirá cuando la ciudad revele su verdadera cara?</p>
+    </section>
+
+    <section class="candidates-section">
+        <h3 class="section-title">Top Candidatos Globales</h3>
+        <div class="grid" id="candidates-grid">
+            </div>
+    </section>
+
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-left">
+                <img src="" alt="Candidato" class="modal-img" id="modal-img">
+            </div>
+            <div class="modal-right">
+                <div class="modal-role-label">Candidato Oficial</div>
+                <h2 class="modal-name" id="modal-name">Nombre</h2>
+                <div class="modal-character" id="modal-character">Personaje: Desconocido</div>
+                
+                <div class="modal-section" id="modal-desc-container">
+                    <h4>Perfil del Personaje</h4>
+                    <p id="modal-desc">Descripción aquí.</p>
+                </div>
+
+                <div class="modal-section">
+                    <h4>Escena Destacada (Audición)</h4>
+                    <p id="modal-scene">Escena aquí.</p>
+                </div>
+
+                <div class="modal-section">
+                    <h4>Extracto de Entrevista</h4>
+                    <p id="modal-interview">Entrevista aquí.</p>
+                </div>
+            </div>
         </div>
-        <button id="getVideoBtn">Reproducir Video</button>
-        <p id="message"></p>
     </div>
 
-    <div id="video-container">
-        <video id="video-player" controls></video>
-    </div>
+    <footer>
+        <p>&copy; 2026 Sombras de la Ciudad - Fictional Casting Concept.</p>
+        <p style="margin-top: 10px; opacity: 0.5; font-size: 0.8rem;">Powered by <span class="footer-logo">Sala Cine</span> Productions</p>
+    </footer>
 
     <script>
-        document.getElementById('getVideoBtn').addEventListener('click', async () => {
-            const fileCode = document.getElementById('fileCode').value.trim();
-            const apiKey = document.getElementById('apiKey').value.trim();
-            const videoPlayer = document.getElementById('video-player');
-            const messageElement = document.getElementById('message');
+        /**
+         * BASE DE DATOS SIMULADA DE CANDIDATOS
+         * No se requiere backend. Los datos viven en este array.
+         * Aseguramos que Dylan esté en la posición #3 manipulando los votos base.
+         */
+        const candidatesData = [
+            {
+                id: 1,
+                name: "Mateo Santoro",
+                character: "Inspector Vargas",
+                votes: 1350842,
+                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop", /* PEGA TU ENLACE AQUÍ */
+                description: "Vargas es un detective veterano, desgastado por el sistema pero con una brújula moral inquebrantable. Conoce las calles mejor que nadie.",
+                scene: "Interrogatorio en el muelle sur bajo la lluvia, descubriendo al primer soplón.",
+                interview: "'La ciudad no perdona a los débiles. Quería mostrar la fatiga en los ojos de Vargas, esa pesadez de llevar secretos que no le pertenecen.'"
+            },
+            {
+                id: 2,
+                name: "Javier Montenegro",
+                character: "El 'Cuervo' Silva",
+                votes: 1120531,
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop", /* PEGA TU ENLACE AQUÍ */
+                description: "Líder carismático pero volátil del sindicato del norte. Manipulador y siempre un paso adelante de la policía.",
+                scene: "Monólogo en el ático del casino mientras la policía rodea el edificio.",
+                interview: "'Los villanos nunca creen que son villanos. Silva piensa que él es el único que mantiene el orden en el caos.'"
+            },
+            {
+                id: 3,
+                name: "Dylan Narváez",
+                character: "Adrián Vega",
+                votes: 785432,
+                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop", /* PEGA AQUÍ TU FOTO REAL O CONCEPTUAL */
+                isDylan: true, // Flag especial para diseño destacado
+                description: "Adrián Vega es un infiltrado estratégico. De complexión muy delgada y definida, utiliza su apariencia ágil y astuta para pasar completamente desapercibido entre los matones pesados. Comienza como un personaje secundario, un peón silencioso en el tablero del crimen organizado, pero su inteligencia táctica e implacable capacidad de adaptación lo convierten rápidamente en la pieza clave de la historia.",
+                scene: "La escena del callejón en el episodio 4: Adrián es acorralado por dos sicarios, pero usa el entorno a su favor para desarmarlos en segundos sin levantar sospechas de sus jefes, demostrando que no es un simple novato.",
+                interview: "'Adrián es fascinante porque su mayor arma no es la fuerza bruta, sino su mente y su velocidad. Quería transmitir esa tensión de alguien que siempre está calculando tres movimientos por delante mientras finge ser el eslabón más débil.'"
+            },
+            {
+                id: 4,
+                name: "Tomás Alarcón",
+                character: "Julián 'El Niño' Cruz",
+                votes: 654321,
+                image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop",
+                description: "El conductor experto en huidas de la banda. Impulsivo, adicto a la adrenalina y leal hasta la muerte.",
+                scene: "Persecución por el centro financiero huyendo con un cargamento comprometedor.",
+                interview: "'Es pura energía cinética. Si no se está moviendo, siente que se ahoga.'"
+            },
+            {
+                id: 5,
+                name: "Nicolás Reyes",
+                character: "Sargento Márquez",
+                votes: 543210,
+                image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=600&auto=format&fit=crop",
+                description: "Compañero de Vargas. Joven, ambicioso, pero secretamente en la nómina del sindicato del norte.",
+                scene: "Escena eliminando pruebas en el cuarto de evidencias bajo presión de tiempo.",
+                interview: "'Interpretar la doble moral fue el mayor reto. Márquez justifica su corrupción pensando en su familia.'"
+            },
+            {
+                id: 6,
+                name: "Sebastián Castro",
+                character: "Leo 'El Sastre' Bernal",
+                votes: 432109,
+                image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop",
+                description: "El contador de la mafia. Nunca se ensucia las manos con sangre, solo con números.",
+                scene: "Descifrando un libro contable encriptado mientras los federales tumban la puerta.",
+                interview: "'El Sastre es el cerebro logístico. Quería que se viera frío, calculador, casi robótico.'"
+            },
+            {
+                id: 7,
+                name: "Gabriel Ortiz",
+                character: "Fiscal Robles",
+                votes: 321098,
+                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop",
+                description: "Un fiscal implacable que busca la alcaldía usando los arrestos como campaña política.",
+                scene: "Rueda de prensa donde declara la guerra abierta a las mafias locales.",
+                interview: "'Robles es teatro puro. Su justicia es solo una herramienta para el poder.'"
+            },
+            {
+                id: 8,
+                name: "Lucas Mendoza",
+                character: "Camilo 'Sombra' Cárdenas",
+                votes: 210987,
+                image: "https://images.unsplash.com/photo-1480429370139-e0132c086e2a?q=80&w=600&auto=format&fit=crop",
+                description: "Un sicario silencioso y metódico. El principal antagonista físico de Adrián Vega.",
+                scene: "Emboscada en el metro a las 3 AM.",
+                interview: "'No tiene muchas líneas de diálogo, todo está en su lenguaje corporal y su mirada.'"
+            },
+            {
+                id: 9,
+                name: "Simón Valdés",
+                character: "Periodista Linares",
+                votes: 109876,
+                image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop",
+                description: "Periodista de investigación obsesionado con exponer el nexo entre la policía y la mafia.",
+                scene: "Recibiendo un sobre anónimo con fotos comprometedoras en un café oscuro.",
+                interview: "'Linares representa a la audiencia. Está descubriendo la conspiración al mismo tiempo que el espectador.'"
+            },
+            {
+                id: 10,
+                name: "Emilio Fuentes",
+                character: "El 'Patrón' Viejo",
+                votes: 98765,
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop",
+                description: "El antiguo rey del inframundo, ahora operando desde la prisión.",
+                scene: "Dando órdenes a Silva a través de mensajes codificados en visitas de rutina.",
+                interview: "'Es un león enjaulado. Su influencia sigue dictando el pulso de la ciudad.'"
+            }
+        ];
 
-            if (!fileCode || !apiKey) {
-                messageElement.textContent = 'Por favor, ingresa el código del archivo y tu clave API.';
-                videoPlayer.style.display = 'none';
-                return;
+        // Estado local para los votos (clonamos para poder modificarlos)
+        let appData = [...candidatesData];
+
+        /**
+         * FUNCIÓN PARA FORMATEAR NÚMEROS (Ej: 1,350,842)
+         */
+        const formatVotes = (num) => {
+            return new Intl.NumberFormat('en-US').format(num);
+        };
+
+        /**
+         * RENDERIZAR TARJETAS EN EL DOM
+         */
+        function renderGrid() {
+            const grid = document.getElementById('candidates-grid');
+            grid.innerHTML = ''; // Limpiar antes de renderizar
+
+            appData.forEach((candidate, index) => {
+                const rank = index + 1;
+                const isTop3 = rank <= 3;
+                
+                // Crear el elemento tarjeta
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openModal(candidate.id);
+
+                card.innerHTML = `
+                    <div class="card-img-wrapper">
+                        <div class="rank-badge" style="background: ${isTop3 ? 'rgba(138, 43, 226, 0.9)' : 'rgba(0,0,0,0.8)'}">
+                            #${rank}
+                        </div>
+                        <img src="${candidate.image}" alt="${candidate.name}" class="card-img" loading="lazy">
+                        <div class="card-info">
+                            <h3 class="card-name">${candidate.name}</h3>
+                            <div style="font-size: 0.85rem; color: #bbb;">${candidate.character}</div>
+                            <div class="card-votes-container">
+                                <span class="vote-count" id="vote-count-${candidate.id}">${formatVotes(candidate.votes)} votos</span>
+                                <button class="btn-vote" onclick="handleVote(event, ${candidate.id})">Votar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        /**
+         * MANEJAR EL SISTEMA DE VOTACIÓN SIMULADO
+         */
+        function handleVote(event, id) {
+            // Evitar que el clic en el botón abra el modal (detiene la propagación)
+            event.stopPropagation();
+
+            // Encontrar el candidato y sumar el voto
+            const candidateIndex = appData.findIndex(c => c.id === id);
+            if (candidateIndex !== -1) {
+                appData[candidateIndex].votes += 1;
+                
+                // Actualizar visualmente en el DOM sin recargar
+                const voteElement = document.getElementById(`vote-count-${id}`);
+                voteElement.textContent = `${formatVotes(appData[candidateIndex].votes)} votos`;
+                
+                // Añadir animación visual de actualización
+                voteElement.classList.add('updated');
+                setTimeout(() => {
+                    voteElement.classList.remove('updated');
+                }, 300);
+
+                // Opcional: Reordenar si superan a alguien (comentado para mantener siempre la estructura visual pedida, Dylan fijo en #3)
+                // sortAndRender(); 
+            }
+        }
+
+        /**
+         * LÓGICA DEL MODAL DE DETALLE
+         */
+        const modalOverlay = document.getElementById('detail-modal');
+
+        function openModal(id) {
+            const candidate = appData.find(c => c.id === id);
+            if (!candidate) return;
+
+            // Llenar datos
+            document.getElementById('modal-img').src = candidate.image;
+            document.getElementById('modal-name').textContent = candidate.name;
+            document.getElementById('modal-character').textContent = `Interpreta a: ${candidate.character}`;
+            document.getElementById('modal-desc').textContent = candidate.description;
+            document.getElementById('modal-scene').textContent = candidate.scene;
+            document.getElementById('modal-interview').textContent = candidate.interview;
+
+            // Estilos especiales si es Dylan
+            const descContainer = document.getElementById('modal-desc-container');
+            if (candidate.isDylan) {
+                descContainer.classList.add('highlight-dylan');
+            } else {
+                descContainer.classList.remove('highlight-dylan');
             }
 
-            // Ocultar el video anterior y el mensaje
-            videoPlayer.style.display = 'none';
-            messageElement.textContent = '';
-            videoPlayer.src = '';
+            // Mostrar modal
+            modalOverlay.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
 
-            try {
-                // Se usa un proxy para evitar el error de CORS
-                const proxyUrl = 'https://corsproxy.io/?';
-                const originalApiUrl = `https://goodstream.one/api/file/direct_link?key=${apiKey}&file_code=${fileCode}`;
-                const finalUrl = proxyUrl + encodeURIComponent(originalApiUrl);
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
 
-                // Realizar la solicitud a la API a través del proxy
-                const response = await fetch(finalUrl);
-                const data = await response.json();
-
-                if (data.estado === 200 && data.resultado && data.resultado.versiones && data.resultado.versiones.length > 0) {
-                    // Obtener la URL de la versión de alta calidad (h) o la primera disponible
-                    const highQualityVersion = data.resultado.versiones.find(v => v.name === 'h') || data.resultado.versiones[0];
-                    if (highQualityVersion) {
-                        videoPlayer.src = highQualityVersion.url;
-                        videoPlayer.style.display = 'block';
-                        videoPlayer.load();
-                        messageElement.textContent = 'Video cargado. ¡Disfruta!';
-                        messageElement.style.color = 'green';
-                    } else {
-                        messageElement.textContent = 'No se encontraron versiones de video.';
-                        messageElement.style.color = 'red';
-                    }
-                } else {
-                    messageElement.textContent = `Error: ${data.msg || 'No se pudo obtener el video.'}`;
-                    messageElement.style.color = 'red';
-                }
-            } catch (error) {
-                console.error('Error al obtener el video:', error);
-                messageElement.textContent = 'Ocurrió un error al conectar con la API.';
-                messageElement.style.color = 'red';
+        // Cerrar modal al hacer clic afuera del contenido
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
             }
         });
-    </script>
 
+        // Inicializar la página
+        window.onload = () => {
+            renderGrid();
+        };
+
+    </script>
 </body>
 </html>
