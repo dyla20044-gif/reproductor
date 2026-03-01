@@ -128,7 +128,7 @@
         .btn-vote:hover { background-color: var(--primary-hover); transform: scale(1.05); }
 
         /* =========================================
-           MODAL DE DETALLE
+           MODAL DE DETALLE (AJUSTADO PARA CELULAR)
            ========================================= */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -150,7 +150,7 @@
         .modal-close {
             position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7);
             color: white; border: none; width: 45px; height: 45px; border-radius: 50%;
-            font-size: 1.8rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; cursor: pointer; z-index: 50; display: flex; align-items: center; justify-content: center;
         }
         .modal-close:hover { background: var(--primary-accent); }
 
@@ -183,13 +183,26 @@
             padding: 1.5rem; border-radius: 0 12px 12px 0; margin-top: 1rem;
         }
 
-        .social-links { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .social-links { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
         .social-btn {
             background: rgba(255,255,255,0.1); color: #fff; text-decoration: none;
             padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
             display: flex; align-items: center; gap: 8px; transition: var(--transition-smooth); border: 1px solid rgba(255,255,255,0.2);
         }
         .social-btn:hover { background: var(--primary-accent); border-color: var(--primary-accent); }
+
+        /* Galería de fotos extra para Dylan */
+        .vip-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 1rem;
+        }
+        .vip-gallery img {
+            width: 100%; height: 180px; object-fit: cover; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease;
+        }
+        .vip-gallery img:hover { transform: scale(1.05); border-color: var(--primary-accent); box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3); }
 
         /* Checklist interactivo */
         .checklist-container {
@@ -213,13 +226,33 @@
         .modal-vote-btn:hover { background: var(--success-color); color: #000; transform: translateY(-3px); }
 
         /* =========================================
-           RESPONSIVE
+           RESPONSIVE (AJUSTADO PARA QUE TODO BAJE JUNTO EN MÓVIL)
            ========================================= */
         @media (max-width: 900px) {
             .hero-title { font-size: 3rem; }
-            .modal-content { flex-direction: column; max-height: 95vh; }
-            .modal-left { flex: 0 0 350px; }
-            .modal-right { padding: 2rem; }
+            
+            /* Hacemos que toda la tarjeta baje junta, desactivando la altura fija */
+            .modal-content { 
+                flex-direction: column; 
+                overflow-y: auto; /* Permite scroll a todo el contenido */
+            }
+            .modal-left { 
+                flex: none; 
+                width: 100%; 
+                height: 400px; /* Altura de la foto inicial */
+            }
+            .modal-right { 
+                padding: 2rem; 
+                overflow-y: visible; /* Quita el doble scroll molesto */
+            }
+            
+            /* Dejamos la "X" fija en la pantalla para que siempre se pueda cerrar */
+            .modal-close {
+                position: fixed;
+                top: 25px;
+                right: 25px;
+            }
+
             header, .hero, .candidates-section { padding: 2rem; }
         }
     </style>
@@ -258,7 +291,7 @@
                 
                 <div class="modal-role-info">
                     <h4>Personaje a interpretar</h4>
-                    <p><strong>Adrián Vega (Protagonista).</strong> Requiere un perfil juvenil, complexión física delgada pero atlética, astucia visual y gran presencia ante las cámaras.</p>
+                    <p><strong>Adrián Vega (Protagonista).</strong> Requiere un perfil juvenil, complexión física muy delgada pero definida, astucia visual y agilidad para escenas de acción encubierta.</p>
                 </div>
 
                 <div class="modal-header-info">
@@ -275,6 +308,8 @@
                     
                     <div id="vip-socials"></div>
                 </div>
+
+                <div id="vip-gallery-container"></div>
 
                 <div class="modal-section">
                     <h4>Propuesta de Vestuario</h4>
@@ -304,8 +339,13 @@
                 id: 3, name: "Dylan Narváez", age: 24, country: "Ecuador", subtitle: "Creador de Contenido • Magnate Empresario • Programador",
                 votes: 785432, image: "https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?q=80&w=600&auto=format&fit=crop", 
                 isDylan: true, // FLAG VIP
-                description: "Desde sus raíces bien humildes, Dylan ha salido adelante por sí solo hasta convertirse en un magnate y empresario visionario. Es el creador y programador principal detrás de plataformas exitosas como Sala Cine. A sus 24 años, este creador digital ecuatoriano posee la complexión ideal para el personaje: muy delgado, definido y atlético, lo que le da una ventaja natural para las escenas de agilidad del infiltrado. 'Estoy profundamente agradecido a la vida y a mis seguidores por haberme traído hasta este casting oficial. El éxito se construye línea por línea, código por código', comenta el joven visionario.",
-                socials: { tiktok: "@dylan1m", instagram: "@dylan1m" }
+                description: "Desde sus raíces bien humildes, Dylan ha salido adelante por sí solo hasta convertirse en un magnate y empresario visionario. Es el creador y programador principal detrás de plataformas exitosas como Sala Cine. A sus 24 años, este creador digital ecuatoriano posee la complexión ideal para el personaje: muy delgado, definido y extremadamente ágil, lo que le da una ventaja natural e implacable para las escenas de infiltración. 'Estoy profundamente agradecido a la vida y a mis seguidores por haberme traído hasta este casting oficial. El éxito se construye línea por línea, código por código', comenta el joven visionario.",
+                socials: { tiktok: "@dylan1m", instagram: "@dylan1m" },
+                extraPhotos: [
+                    "https://images.unsplash.com/photo-1511406361295-0a1ff814c0ce?q=80&w=400&auto=format&fit=crop", // Foto oscura táctica (Ejemplo 1)
+                    "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=400&auto=format&fit=crop", // Foto urbana (Ejemplo 2)
+                    "https://images.unsplash.com/photo-1542644914-a3f256087968?q=80&w=400&auto=format&fit=crop"  // Foto infiltrado (Ejemplo 3)
+                ]
             },
             {
                 id: 4, name: "Tomás Alarcón", age: 22, country: "Chile", subtitle: "Estudiante de Cine",
@@ -397,7 +437,6 @@
                     setTimeout(() => voteElement.classList.remove('updated'), 300);
                 }
 
-                // Animación visual si se vota desde el modal
                 const modalBtn = document.getElementById('modal-vote-btn');
                 if(currentModalId === id) {
                     modalBtn.textContent = "¡VOTO REGISTRADO!";
@@ -434,10 +473,12 @@
 
             const descContainer = document.getElementById('modal-desc-container');
             const socialsContainer = document.getElementById('vip-socials');
+            const galleryContainer = document.getElementById('vip-gallery-container');
             const checklistContainer = document.getElementById('vip-checklist');
             
             // Limpiar contenedores dinámicos
             socialsContainer.innerHTML = '';
+            galleryContainer.innerHTML = '';
             checklistContainer.innerHTML = '';
 
             if (candidate.isDylan) {
@@ -451,11 +492,25 @@
                     </div>
                 `;
 
+                // Inyectar Galería de Fotos (Book)
+                if(candidate.extraPhotos && candidate.extraPhotos.length > 0) {
+                    let imagesHtml = candidate.extraPhotos.map(img => `<img src="${img}" alt="Book de casting de Dylan">`).join('');
+                    galleryContainer.innerHTML = `
+                        <div class="modal-section" style="margin-top: 2rem;">
+                            <h4>Book Fotográfico del Personaje</h4>
+                            <p style="margin-bottom: 10px; font-size: 0.95rem;">Muestra de complexión, estilo táctico oscuro y agilidad visual para el papel de Adrián Vega.</p>
+                            <div class="vip-gallery">
+                                ${imagesHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+
                 // Inyectar Checklist Interactivo
                 checklistContainer.innerHTML = `
                     <div class="checklist-container">
                         <div class="checklist-title">Verificación Oficial del Director (Marca antes de votar):</div>
-                        <label class="check-item"><input type="checkbox"> <span>Perfil físico exacto (Complexión delgada y ágil)</span></label>
+                        <label class="check-item"><input type="checkbox"> <span>Perfil físico exacto (Complexión delgada, definida y ágil)</span></label>
                         <label class="check-item"><input type="checkbox"> <span>Mente analítica y habilidades de programación</span></label>
                         <label class="check-item"><input type="checkbox"> <span>Carisma de Creador Digital / Visionario</span></label>
                         <label class="check-item"><input type="checkbox"> <span>Actitud empresarial de Magnate</span></label>
